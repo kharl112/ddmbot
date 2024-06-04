@@ -12,6 +12,8 @@ module.exports = (() => {
         adapterCreator: interaction.member.voice.guild.voiceAdapterCreator,
       }
 
+      await interaction.deferReply();
+
       const connection = joinVoiceChannel(options);
       const player = createAudioPlayer();
 
@@ -33,7 +35,7 @@ module.exports = (() => {
       player.play(resource);
       const subscription = connection.subscribe(player); 
             
-      await interaction.reply({
+      await interaction.editReply({
         content: `playing rn ${song.title}`,
       });
 
