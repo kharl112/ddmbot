@@ -6,10 +6,20 @@ require("dotenv").config();
 //apply fallback just in case
 const token = process.env.DISCORD_BOT_TOKEN || "";
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates] });
+const client = new Client({ intents: [
+	GatewayIntentBits.Guilds, 
+	GatewayIntentBits.GuildMessages, 
+	GatewayIntentBits.MessageContent, 
+	GatewayIntentBits.GuildMembers, 
+	GatewayIntentBits.GuildVoiceStates
+]});
+
+module.exports = { client }
+
 client.commands = new Collection();
 
 initializeEvents(client);
 initializeCommands(client);
 
 client.login(token);
+
