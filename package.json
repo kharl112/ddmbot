@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "ddmbot": "nodemon main.js",
+    "ddmbot-prod": "node main.js",
     "remove-commands": "node ./command-builders/handlers/remove.js",
     "deploy-commands": "node ./command-builders/handlers/deploy.js",
     "test": "jest ./helpers"
