@@ -2,7 +2,7 @@ const { createAudioPlayer, joinVoiceChannel, createAudioResource, VoiceConnectio
 
 const { client } = require('../../main.js');
 
-const ytdl = require('ytdl-core');
+const ytdl = require("@distube/ytdl-core");
 const yts = require('yt-search');
 
 const player = createAudioPlayer();
