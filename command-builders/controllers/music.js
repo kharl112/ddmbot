@@ -89,16 +89,6 @@ module.exports = (() => {
       return;
     }
 
-    //create audio player
-    const player = createAudioPlayer({
-      behaviors: {
-        noSubscriber: NoSubscriberBehavior.Pause
-      },
-    });
-
-    //subscription
-    connection.subscribe(player);
-
     //when bot intentionally/unintentionally disconnected
     connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
       try {
@@ -109,14 +99,16 @@ module.exports = (() => {
       } catch (error) {
 
         //garbage collection
-        delete map_songs[member_channel_id];
-        player.stop();
+        if(getVoiceConnection(options.guildId)){
+          connection.destroy();
+        }
 
-        //clear music queue
-        connection.destroy();
         await interaction.editReply({
           content: `Bro got disconnected`, 
         });
+
+        //clear music queue
+        delete map_songs[member_channel_id];
 
         return;
       }
@@ -150,6 +142,16 @@ module.exports = (() => {
       }
       return;
     }
+
+    //create audio player
+    const player = createAudioPlayer({
+      behaviors: {
+        noSubscriber: NoSubscriberBehavior.Pause
+      },
+    });
+
+    //subscription
+    connection.subscribe(player);
 
     let current = get_resource_from_queue(member_channel_id);
     if(current) {
