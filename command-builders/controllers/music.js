@@ -1,4 +1,4 @@
-const { createAudioPlayer, joinVoiceChannel, createAudioResource, VoiceConnectionStatus, NoSubscriberBehavior, getVoiceConnection, AudioPlayerStatus  } = require('@discordjs/voice');
+const { createAudioPlayer, joinVoiceChannel, createAudioResource, VoiceConnectionStatus, entersState, NoSubscriberBehavior, getVoiceConnection, AudioPlayerStatus  } = require('@discordjs/voice');
 
 const { client } = require('../../main.js');
 
@@ -39,6 +39,12 @@ module.exports = (() => {
         url: songInfo.all[0].url,
       };
 
+
+      let connection = getVoiceConnection(options.guildId);
+      if(!connection){
+        connection = joinVoiceChannel(options);
+      }
+
       if(!map_songs.hasOwnProperty(options.channelId)){
         map_songs[options.channelId] = [new_song]
       }else{
@@ -47,11 +53,6 @@ module.exports = (() => {
           content: `added on queue ${new_song.title}`,
         });
         return;
-      }
-
-      let connection = getVoiceConnection(options.guildId);
-      if(!connection){
-        connection = joinVoiceChannel(options);
       }
 
       let song = map_songs[options.channelId].shift();
@@ -69,7 +70,7 @@ module.exports = (() => {
           player.play(resource);
           await interaction.followUp(`playing rn ${song.title}`);
         }else {
-          connection.destroy();
+          console.log(error);
           await interaction.followUp('I left');
         }
       });
@@ -81,8 +82,21 @@ module.exports = (() => {
           player.play(resource);
           await interaction.followUp(`playing rn ${song.title}`);
         }else {
+          console.log('idled');
           connection.destroy();
           await interaction.followUp('I left');
+        }
+      });
+
+
+      connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+        try {
+          await Promise.race([
+            entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
+            entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
+          ]);
+        } catch (error) {
+          connection.destroy();
         }
       });
 
