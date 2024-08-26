@@ -9,6 +9,8 @@ const {
   AudioPlayerStatus  
 } = require('@discordjs/voice');
 
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+
 const { client } = require('../../main.js');
 
 const ytdl = require("@distube/ytdl-core");
@@ -17,6 +19,8 @@ const yts = require('yt-search');
 const player = createAudioPlayer();
 
 const map_songs = {};
+
+
 
 module.exports = (() => {
 
@@ -170,10 +174,29 @@ module.exports = (() => {
     });
 
     player.on(AudioPlayerStatus.Playing, async () => {
-      console.log(map_songs);
-      if(current) await interaction.followUp(`playing rn ${current.song.title}`);
-    });
+      if(current) {
+        const next_btn = new ButtonBuilder()
+          .setCustomId('play_next')
+          .setLabel('Next')
+          .setStyle(ButtonStyle.Success);
 
+        const action_row = new ActionRowBuilder()
+          .addComponents(next_btn);
+
+        const response = await interaction.followUp({ content: `playing rn ${current.song.title}`, components: [action_row] });
+        const confirmation = await response.awaitMessageComponent();
+
+        if (confirmation.customId === 'play_next') {
+          await confirmation.update({ content: `playing next audio`, components: [] });
+          current = get_resource_from_queue(member_channel_id);
+          if(current) {
+            player.play(current.resource);
+          }else {
+            await interaction.editReply({ content: `No songs left on the queue`})
+          }
+        } 
+      }
+    });
   };
 
   return { play };
