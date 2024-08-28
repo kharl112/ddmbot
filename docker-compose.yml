@@ -1,0 +1,9 @@
+services:
+  ddmbot:
+    build: .
+    env_file: ".env"
+    deploy:
+      mode: global
+
+
+
