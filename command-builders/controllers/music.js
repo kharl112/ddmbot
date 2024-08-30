@@ -133,9 +133,8 @@ module.exports = (() => {
       return;
     }
 
-    //TODO: this should be on sqlite 
     //add new song to queue
-    if(!map_songs.hasOwnProperty(member_channel_id)){
+    if(!map_songs.hasOwnProperty(member_channel_id) || !map_songs[member_channel_id].length){
       map_songs[member_channel_id] = [new_song]
     } else{
       //check again if theres no connection
