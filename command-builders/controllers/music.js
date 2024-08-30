@@ -47,6 +47,7 @@ module.exports = (() => {
   }
 
   const get_resource_from_queue = (channel_id)  => {
+    if(!map_songs.hasOwnProperty(channel_id)) return null;
     if(!map_songs[channel_id].length) return null;
     let song = map_songs[channel_id].shift();
     return { resource: get_audio_resource_stream(song), song } ;
