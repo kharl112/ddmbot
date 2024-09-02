@@ -134,7 +134,7 @@ module.exports = (() => {
     }
 
     //add new song to queue
-    if(!map_songs.hasOwnProperty(member_channel_id) || !map_songs[member_channel_id].length){
+    if(!map_songs.hasOwnProperty(member_channel_id)){
       map_songs[member_channel_id] = [new_song]
     } else{
       //check again if theres no connection
@@ -143,8 +143,8 @@ module.exports = (() => {
         await interaction.editReply({
           content: `added on queue ${new_song.title}`,
         });
+        return;
       }
-      return;
     }
 
     //create audio player
@@ -160,16 +160,26 @@ module.exports = (() => {
     let current = get_resource_from_queue(member_channel_id);
     if(current) {
       player.play(current.resource);
+    }else {
+      delete map_songs[member_channel_id];
     }
 
     player.on('error', (error) => {
       console.error(`Error: ${error.message}`);
+      current = get_resource_from_queue(member_channel_id);
+      if(current) {
+        player.play(current.resource);
+      }else {
+        delete map_songs[member_channel_id];
+      }
     });
 
     player.on(AudioPlayerStatus.Idle, () => {
       current = get_resource_from_queue(member_channel_id);
       if(current) {
         player.play(current.resource);
+      }else {
+        delete map_songs[member_channel_id];
       }
     });
 
