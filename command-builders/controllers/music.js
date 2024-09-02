@@ -164,8 +164,9 @@ module.exports = (() => {
       delete map_songs[member_channel_id];
     }
 
-    player.on('error', (error) => {
+    player.on('error', async (error) => {
       console.error(`Error: ${error.message}`);
+      await interaction.followUp({ content: `error playing current music : ${error.message}`});
       current = get_resource_from_queue(member_channel_id);
       if(current) {
         player.play(current.resource);
