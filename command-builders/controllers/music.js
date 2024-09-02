@@ -164,11 +164,6 @@ module.exports = (() => {
 
     player.on('error', (error) => {
       console.error(`Error: ${error.message}`);
-      console.error(`playing next song`);
-      current = get_resource_from_queue(member_channel_id);
-      if(current) {
-        player.play(current.resource);
-      }
     });
 
     player.on(AudioPlayerStatus.Idle, () => {
