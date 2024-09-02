@@ -48,8 +48,14 @@ module.exports = (() => {
 
   const get_resource_from_queue = (channel_id)  => {
     if(!map_songs.hasOwnProperty(channel_id)) return null;
-    if(!map_songs[channel_id].length) return null;
+    if(!map_songs[channel_id].length) {
+      delete map_songs[channel_id];
+    };
+
     let song = map_songs[channel_id].shift();
+    if(!map_songs[channel_id].length) {
+      delete map_songs[channel_id];
+    };
     return { resource: get_audio_resource_stream(song), song } ;
   }
 
@@ -160,8 +166,6 @@ module.exports = (() => {
     let current = get_resource_from_queue(member_channel_id);
     if(current) {
       player.play(current.resource);
-    }else {
-      delete map_songs[member_channel_id];
     }
 
     player.on('error', async (error) => {
@@ -170,8 +174,6 @@ module.exports = (() => {
       current = get_resource_from_queue(member_channel_id);
       if(current) {
         player.play(current.resource);
-      }else {
-        delete map_songs[member_channel_id];
       }
     });
 
@@ -179,8 +181,6 @@ module.exports = (() => {
       current = get_resource_from_queue(member_channel_id);
       if(current) {
         player.play(current.resource);
-      }else {
-        delete map_songs[member_channel_id];
       }
     });
 
@@ -203,7 +203,6 @@ module.exports = (() => {
           if(current) {
             player.play(current.resource);
           }else {
-            delete map_songs[member_channel_id];
             await interaction.editReply({ content: `No songs left on the queue`})
           }
         } 
