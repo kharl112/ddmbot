@@ -1,5 +1,6 @@
 services:
   ddmbot:
+    image: registry.gitlab.com/kharl-test1/kharl-test1/ddmbot-ddmbot:latest
     build: .
     env_file: ".env"
     deploy:

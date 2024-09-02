@@ -202,6 +202,7 @@ module.exports = (() => {
           if(current) {
             player.play(current.resource);
           }else {
+            delete map_songs[member_channel_id];
             await interaction.editReply({ content: `No songs left on the queue`})
           }
         } 
