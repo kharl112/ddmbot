@@ -191,8 +191,15 @@ module.exports = (() => {
           .setLabel('Next')
           .setStyle(ButtonStyle.Success);
 
+        const stop_btn = new ButtonBuilder()
+          .setCustomId('stop')
+          .setLabel('Stop')
+          .setStyle(ButtonStyle.Danger);
+
+
+
         const action_row = new ActionRowBuilder()
-          .addComponents(next_btn);
+          .addComponents(next_btn, stop_btn);
 
         const response = await interaction.followUp({ content: `playing rn ${current.song.title}`, components: [action_row] });
         const confirmation = await response.awaitMessageComponent();
@@ -206,6 +213,11 @@ module.exports = (() => {
             await interaction.editReply({ content: `No songs left on the queue`})
           }
         } 
+
+        if (confirmation.customId === 'stop') {
+          player.stop();
+          await confirmation.update({ content: `player stopped`, components: [] });
+        }
       }
     });
   };
