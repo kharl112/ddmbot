@@ -1,0 +1,11 @@
+[Unit]
+Description=DDMBOT music bot for discord
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /apps/ddmbot/main.js
+WorkingDirectory=/apps/ddmbot
+
+[Install]
+WantedBy=multi-user.target
+
